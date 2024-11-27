@@ -17,8 +17,12 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces"
+    "lint": "npm run lint --workspaces",
+    "release": "node scripts/build-release.js"
   },
   "author": "guomengtao",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "archiver": "^5.3.1"
+  }
 } 
