@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "extensions": {
+    "talk-a": {
+      "badge_color": "#9c27b0",
+      "role": "sender-receiver"
+    },
+    "talk-b": {
+      "badge_color": "#4caf50",
+      "role": "sender-receiver"
+    },
+    "talk-g": {
+      "badge_color": "#9e9e9e",
+      "role": "sender-receiver"
+    }
+    // ... 其他扩展配置
+  },
+  "features": {
+    "message_sync": true,
+    "real_time_badge": true
+    // ... 其他功能开关
+  }
+} 

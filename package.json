@@ -1,0 +1,24 @@
+{
+  "name": "chrome-talk-extensions",
+  "version": "1.0.0",
+  "description": "A collection of Chrome extensions for article and message management",
+  "private": true,
+  "workspaces": [
+    "talk-a",
+    "talk-b",
+    "talk-c",
+    "talk-d",
+    "talk-e",
+    "talk-f",
+    "talk-g",
+    "talk-h",
+    "talk-i"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces"
+  },
+  "author": "guomengtao",
+  "license": "MIT"
+} 

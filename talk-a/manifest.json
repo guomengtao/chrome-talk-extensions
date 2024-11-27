@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Talk-A",
+  "version": "1.0",
+  "description": "Chrome extension for communication between extensions - Side A",
+  "icons": {
+    "128": "images/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "images/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "action"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "ids": [
+        "pcegncdmdaehddgmifeedeeffjfkmeal",
+        "iflaljigapebhboldihgmoojbmbdjfoa"
+    ]
+  }
+} 

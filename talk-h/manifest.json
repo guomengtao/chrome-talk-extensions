@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Talk-H Article Notifier",
+  "version": "1.0",
+  "description": "实时文章提醒助手",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "permissions": [
+    "storage",
+    "notifications",
+    "alarms",
+    "tts",  // 文字转语音
+    "audio",
+    "system.display",  // 用于控制显示器亮度闪烁
+    "tabs",           // 用于打开新标签页
+    "windows",        // 用于窗口管理
+    "desktopCapture"  // 用于全屏提醒
+  ],
+  "host_permissions": [
+    "https://*.supabase.co/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "js/background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "web_accessible_resources": [{
+    "resources": ["js/config.js"],
+    "matches": ["<all_urls>"]
+  }]
+} 

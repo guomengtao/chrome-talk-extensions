@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Talk-E (Article Reader)",
+  "version": "1.0",
+  "description": "Chrome extension for reading articles from Supabase with real-time updates",
+  "icons": {
+    "128": "images/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "images/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "action"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "host_permissions": [
+    "https://tkcrnfgnspvtzwbbvyfv.supabase.co/*"
+  ]
+} 

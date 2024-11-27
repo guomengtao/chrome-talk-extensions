@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Talk-D (Extension Manager)</title>
+  <style>
+    body {
+      width: 400px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      color: #666;
+      margin: 15px 0 10px;
+      font-size: 14px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+
+    .extension-section {
+      margin-bottom: 20px;
+    }
+
+    .extension-list {
+      margin-top: 15px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .extension-item {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      background: white;
+      transition: background-color 0.2s;
+    }
+
+    .extension-item:hover {
+      background: #f5f5f5;
+    }
+
+    .extension-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    .extension-info {
+      flex-grow: 1;
+      margin-right: 10px;
+    }
+
+    .extension-name {
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .extension-id {
+      font-size: 10px;
+      color: #666;
+    }
+
+    .extension-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .status-enabled {
+      background-color: #4caf50;
+    }
+
+    .status-disabled {
+      background-color: #f44336;
+    }
+
+    .toggle-btn {
+      padding: 4px 8px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      color: white;
+      min-width: 50px;
+    }
+
+    .toggle-btn.enabled {
+      background-color: #f44336;
+    }
+
+    .toggle-btn.disabled {
+      background-color: #4caf50;
+    }
+
+    .toggle-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .refresh-all-btn {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      color: white;
+      background-color: #2196f3;
+      transition: background-color 0.3s;
+      margin-bottom: 10px;
+    }
+
+    .refresh-all-btn:hover {
+      background-color: #1976d2;
+    }
+
+    .refresh-all-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-bottom: 15px;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      text-align: center;
+      min-height: 16px;
+    }
+
+    .status.info {
+      background-color: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .status.error {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+
+    .status.success {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <h2>扩展管理器</h2>
+  
+  <button id="refreshAllBtn" class="refresh-all-btn">重新加载所有扩展</button>
+  <div id="status" class="status"></div>
+  
+  <div class="extension-list" id="extensionList">
+    <!-- 扩展列表将通过 JavaScript 动态填充 -->
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html> 

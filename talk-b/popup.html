@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Talk-B</title>
+  <style>
+    body {
+      width: 360px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+    }
+
+    h2 {
+      color: #4caf50;
+      margin: 0 0 15px 0;
+      padding: 0;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .message-list {
+      height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 15px;
+    }
+
+    .message {
+      margin: 8px 0;
+      max-width: 85%;
+      clear: both;
+      position: relative;
+    }
+
+    .message.sent {
+      float: right;
+      background: #e8f5e9;
+      border-radius: 15px 15px 0 15px;
+      padding: 8px 12px;
+      margin-left: 15%;
+    }
+
+    .message.received {
+      float: left;
+      background: #f5f5f5;
+      border-radius: 15px 15px 15px 0;
+      padding: 8px 12px;
+      margin-right: 15%;
+    }
+
+    .message-header {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .message-text {
+      word-break: break-word;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .delete-btn {
+      position: absolute;
+      right: -25px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #f44336;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+      padding: 4px;
+      font-size: 12px;
+    }
+
+    .message:hover .delete-btn {
+      opacity: 1;
+    }
+
+    .input-container {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      gap: 8px;
+    }
+
+    input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 20px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    input:focus {
+      border-color: #4caf50;
+    }
+
+    button {
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+
+    #sendButton {
+      background: #4caf50;
+      color: white;
+    }
+
+    #sendButton:hover {
+      background: #388e3c;
+    }
+
+    .clear-btn {
+      background: #f44336;
+      color: white;
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+
+    .clear-btn:hover {
+      background: #d32f2f;
+    }
+
+    .empty-message {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+      font-style: italic;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      margin-top: 8px;
+      min-height: 15px;
+    }
+
+    /* 滚动条样式 */
+    .message-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .message-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    .message-list::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+    }
+
+    .message-list::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  </style>
+</head>
+<body>
+  <h2>Talk-B</h2>
+  <div id="messageList" class="message-list"></div>
+  <div class="input-container">
+    <input type="text" id="messageInput" placeholder="输入消息...">
+    <button id="sendButton">发送</button>
+  </div>
+  <button id="clearAllButton" class="clear-btn">清除所有消息</button>
+  <div id="status" class="status"></div>
+  <script src="popup.js"></script>
+</body>
+</html> 

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Talk-D (Extension Manager)",
+  "version": "1.0",
+  "description": "Manager for refreshing and controlling Talk-A, Talk-B, and Talk-C extensions",
+  "icons": {
+    "128": "images/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "images/icon128.png"
+  },
+  "permissions": [
+    "management",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "ids": [
+      "japicpcjchioihompffnikdofkngacnh",
+      "pcegncdmdaehddgmifeedeeffjfkmeal",
+      "iflaljigapebhboldihgmoojbmbdjfoa"
+    ]
+  }
+} 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Talk-I Article Browser</title>
+    <link rel="stylesheet" href="css/popup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>文章列表</h1>
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="today">今日</button>
+                <button class="filter-btn" data-filter="week">本周</button>
+            </div>
+        </div>
+        <div class="article-list">
+            <!-- 文章列表将通过 JavaScript 动态填充 -->
+        </div>
+    </div>
+    <script src="js/lib/supabase.min.js"></script>
+    <script type="module" src="js/popup.js"></script>
+</body>
+</html> 

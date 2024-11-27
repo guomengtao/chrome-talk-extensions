@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Talk-H 文章提醒助手</title>
+    <link rel="stylesheet" href="css/popup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="status-bar">
+            <div class="db-status">
+                <span class="status-dot"></span>
+                <span class="status-text">数据库连接中...</span>
+            </div>
+            <div class="article-stats">
+                <span class="total-count">总文章: 0</span>
+                <span class="read-count">已读: 0</span>
+                <span class="unread-count">未读: 0</span>
+            </div>
+        </div>
+        <h2>未读文章</h2>
+        <div class="article-list">
+            <!-- 文章列表将通过 JavaScript 动态填充 -->
+        </div>
+        <div class="settings">
+            <h3>提醒设置</h3>
+            <label>
+                <input type="checkbox" id="enableSound" checked>
+                启用声音提醒
+            </label>
+            <label>
+                <input type="checkbox" id="enableVoice" checked>
+                启用语音提醒
+            </label>
+            <label>
+                <input type="checkbox" id="enablePreview" checked>
+                启用预览窗口
+            </label>
+            <label>
+                <input type="checkbox" id="enableScreenFlash">
+                启用屏幕闪烁
+            </label>
+            <label>
+                <input type="checkbox" id="enableFloating" checked>
+                启用悬浮窗
+            </label>
+            <label>
+                <input type="checkbox" id="enableFullScreen">
+                启用全屏提醒
+            </label>
+            <label>
+                <input type="checkbox" id="enableTabNotification" checked>
+                启用标签页提醒
+            </label>
+            <label>
+                <input type="checkbox" id="enableVibration" checked>
+                启用设备振动
+            </label>
+            <label>
+                <input type="checkbox" id="enableProgressive" checked>
+                启用渐进式提醒
+            </label>
+        </div>
+    </div>
+    <script src="js/popup.js"></script>
+</body>
+</html> 

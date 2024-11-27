@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Talk-F (Article Publisher)</title>
+  <style>
+    body {
+      width: 400px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+    }
+
+    h2 {
+      color: #9c27b0;
+      margin: 0 0 15px 0;
+      padding: 0;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    textarea {
+      height: 200px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #9c27b0;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background: #7b1fa2;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .status.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .status.error {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .preview {
+      margin-top: 15px;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .preview-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .preview-content {
+      font-size: 14px;
+      color: #666;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h2>发布新文章</h2>
+  
+  <div class="form-group">
+    <label for="title">标题</label>
+    <input type="text" id="title" placeholder="输入文章标题...">
+  </div>
+
+  <div class="form-group">
+    <label for="content">内容</label>
+    <textarea id="content" placeholder="输入文章内容..."></textarea>
+  </div>
+
+  <button id="publishBtn">发布文章</button>
+
+  <div id="status" class="status"></div>
+
+  <script src="config.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html> 
