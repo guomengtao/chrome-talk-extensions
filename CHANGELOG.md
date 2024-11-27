@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.1.0] - 2024-03-19
+
+### Added
+- Talk-H: Enhanced alert system with comprehensive statistics
+  - Alert statistics dashboard
+  - Detailed alert history logging
+  - Priority-based notification system
+  - Filterable alert logs
+  - Sound and visual notifications
+  - Real-time statistics updates
+
+### Changed
+- Talk-H: Improved UI/UX
+  - Modern statistics cards design
+  - Enhanced alert history view
+  - Better notification management
+  - Cleaner interface layout
+
+### Technical
+- Enhanced Chrome Storage usage
+- Improved alert tracking system
+- Better error handling
+- Updated documentation
+
 ## [1.0.0] - 2024-01-26
 
 ### Added
