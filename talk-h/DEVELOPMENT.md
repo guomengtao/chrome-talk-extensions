@@ -1,106 +1,127 @@
-# Talk-H 开发文档
+# Talk-H Plugin Development Guide
 
-## 功能概述
-Talk-H 是文章提醒器，负责监控文章更新并发送通知。
+## Overview
+Talk-H is a Chrome extension designed to provide real-time article alerts with comprehensive tracking and notification features. The plugin offers both visual and audio notifications, along with detailed statistics tracking.
 
-### 核心功能
-    - 文章更新监控
-    - 自定义提醒规则
-    - 通知管理
-    - 提醒历史记录
+## Key Features
+- Real-time article monitoring
+- Customizable alert system (sound and notifications)
+- Comprehensive alert statistics tracking
+- Detailed alert history logging
+- Multi-language support (English/Chinese)
 
-### 技术栈
-    - Chrome Extension API
-    - Chrome Notifications API
-    - Supabase Realtime API
-    - JavaScript ES6+
-    - WebSocket
+## Technical Architecture
 
-## API 接口
+### Core Components
+1. **Background Service (background.js)**
+   - Manages article monitoring
+   - Handles alert generation and tracking
+   - Maintains alert statistics and history
+   - Manages Chrome local storage
 
-### 更新监控
-    // 监听文章更新
-    const watchArticleUpdates = () => {
-        const channel = supabase.channel('article-updates')
-            .on(
-                'postgres_changes',
-                { 
-                    event: '*', 
-                    schema: 'public', 
-                    table: 'superbase_articles',
-                    filter: 'is_deleted=eq.false'
-                },
-                (payload) => handleArticleChange(payload)
-            )
-            .subscribe();
-    };
+2. **Popup Interface (popup.html/js)**
+   - Displays article list and controls
+   - Shows alert statistics dashboard
+   - Provides alert history viewing
+   - Offers filtering and management tools
 
-### 通知管理
-    // 发送通知
-    const sendNotification = async (article) => {
-        try {
-            const notificationId = await chrome.notifications.create({
-                type: 'basic',
-                iconUrl: 'images/icon128.png',
-                title: '文章更新提醒',
-                message: `《${article.title}》已更新`,
-                buttons: [
-                    { title: '查看详情' },
-                    { title: '稍后提醒' }
-                ]
-            });
-            return notificationId;
-        } catch (error) {
-            console.error('发送通知失败:', error);
-            return null;
-        }
-    };
+### Data Management
+- Uses Chrome's local storage for persistence
+- Tracks alert statistics including:
+  * Total alerts count
+  * Sound alerts count
+  * Notification alerts count
+  * Detailed alert logs (last 100 entries)
 
-## 数据结构
+## Alert System
 
-### 提醒规则格式
-    {
-        id: string,           // 规则ID
-        type: string,         // 规则类型
-        conditions: [{        // 触发条件
-            field: string,
-            operator: string,
-            value: any
-        }],
-        actions: [{          // 触发动作
-            type: string,
-            params: object
-        }],
-        schedule: {          // 定时设置
-            type: string,
-            interval: number,
-            times: array
-        }
-    }
+### Alert Types
+1. **Sound Alerts**
+   - Custom audio notifications
+   - Volume control
+   - Configurable sound file
 
-## 开发规范
+2. **Visual Notifications**
+   - Chrome native notifications
+   - Badge updates
+   - In-popup alerts
 
-### 代码风格
-    - 使用 ES6+ 语法
-    - 异步操作使用 async/await
-    - 错误处理使用 try/catch
-    - 适当添加注释
+### Statistics Tracking
+- Real-time alert counting
+- Historical alert logging
+- Filterable alert history
+- Clear alert history option
 
-### 命名规范
-    - 文件名：小写字母，用横线分隔
-    - 类名：大驼峰
-    - 方法名：小驼峰
-    - 常量：大写字母，下划线分隔
+## Development Setup
 
-## 测试要点
-1. 监控功能
-    - 实时更新
-    - 规则匹配
-    - 通知触发
-    - 错误恢复
+### Prerequisites
+- Chrome browser
+- Basic understanding of Chrome extension development
+- Node.js and npm (for development tools)
 
-2. 通知功能
-    - 通知显示
-    - 按钮交互
-    - 提醒时间
-    - 通知分组 
+### Installation
+1. Clone the repository
+2. Navigate to the talk-h directory
+3. Load the extension in Chrome:
+   - Open chrome://extensions/
+   - Enable Developer mode
+   - Click "Load unpacked"
+   - Select the talk-h directory
+
+### Project Structure
+```
+talk-h/
+├── manifest.json         # Extension manifest
+├── popup.html           # Main popup interface
+├── background.js        # Background service worker
+├── assets/             # Static assets
+│   └── complete.mp3    # Alert sound
+├── css/               # Stylesheets
+│   └── popup.css      # Popup styles
+└── js/                # JavaScript files
+    ├── background.js  # Background logic
+    └── popup.js       # Popup interface logic
+```
+
+## API Integration
+
+### Chrome APIs Used
+- `chrome.storage.local`
+- `chrome.notifications`
+- `chrome.runtime`
+- `chrome.action`
+
+### Storage Schema
+```javascript
+{
+  alertStats: {
+    notifications: number,
+    sounds: number,
+    totalAlerts: number,
+    alertLogs: Array<{
+      type: string,
+      message: string,
+      timestamp: string
+    }>,
+    alertTimes: string[]
+  }
+}
+```
+
+## Testing
+1. Manual testing of alert triggers
+2. Verification of statistics tracking
+3. Notification system testing
+4. Storage persistence testing
+
+## Build and Deploy
+1. Update version in manifest.json
+2. Test all features
+3. Package extension
+4. Submit to Chrome Web Store
+
+## Maintenance
+- Regular testing of alert system
+- Monitoring storage usage
+- Updating sound assets as needed
+- Maintaining compatibility with Chrome updates

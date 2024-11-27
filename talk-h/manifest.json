@@ -3,19 +3,14 @@
   "name": "Talk-H Article Notifier",
   "version": "1.0",
   "description": "实时文章提醒助手",
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
-  },
   "permissions": [
     "storage",
     "notifications",
     "alarms",
-    "tts",  // 文字转语音
-    "audio",
-    "system.display",  // 用于控制显示器亮度闪烁
-    "tabs",           // 用于打开新标签页
-    "windows",        // 用于窗口管理
-    "desktopCapture"  // 用于全屏提醒
+    "tts",
+    "tabs",
+    "windows",
+    "scripting"
   ],
   "host_permissions": [
     "https://*.supabase.co/*"
@@ -38,7 +33,7 @@
     "128": "images/icon128.png"
   },
   "web_accessible_resources": [{
-    "resources": ["js/config.js"],
+    "resources": ["assets/complete.mp3"],
     "matches": ["<all_urls>"]
   }]
-} 
+}

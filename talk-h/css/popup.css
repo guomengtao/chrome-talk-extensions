@@ -23,74 +23,30 @@ h2 {
     padding: 10px;
 }
 
-.settings {
-    padding: 10px;
-    border-top: 1px solid #eee;
-}
-
-.settings h3 {
-    color: #666;
-    margin: 0 0 10px 0;
-}
-
-label {
-    display: block;
-    padding: 5px 0;
-    color: #333;
+.article-item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
     cursor: pointer;
 }
 
-input[type="checkbox"] {
-    margin-right: 8px;
-}
-
-/* 状态栏样式 */
-.status-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 15px;
+.article-item:hover {
     background: #f5f5f5;
-    border-radius: 8px 8px 0 0;
+}
+
+.article-item h3 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.article-meta {
     font-size: 12px;
+    color: #666;
 }
 
-.db-status {
-    display: flex;
-    align-items: center;
+.no-articles {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
 }
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 6px;
-}
-
-.status-dot.connected {
-    background: #4caf50;
-}
-
-.status-dot.connecting {
-    background: #ff9800;
-    animation: blink 1s infinite;
-}
-
-.status-dot.disconnected {
-    background: #f44336;
-}
-
-.article-stats {
-    display: flex;
-    gap: 10px;
-}
-
-.article-stats span {
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: #e0e0e0;
-}
-
-@keyframes blink {
-    50% { opacity: 0.5; }
-} 

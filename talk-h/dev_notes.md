@@ -102,4 +102,124 @@
     - 监控开销
     - 通知频率
     - 存储限制
-    - 内存使用 
+    - 内存使用
+
+## Recent Updates (2024-03)
+
+### Alert System Enhancement
+- Implemented comprehensive alert statistics tracking
+- Added detailed alert history logging
+- Created new statistics dashboard in popup
+- Enhanced notification system with priority support
+
+### UI Improvements
+- Redesigned popup interface with modern styling
+- Added statistics cards for alert metrics
+- Implemented filterable alert history view
+- Added clear history functionality
+
+### Data Management
+- Optimized Chrome local storage usage
+- Implemented alert log rotation (max 100 entries)
+- Added real-time statistics updates
+- Improved data persistence reliability
+
+### Code Refactoring
+- Reorganized background service structure
+- Enhanced error handling and logging
+- Improved message passing between components
+- Added comprehensive code documentation
+
+## Technical Details
+
+### Alert Statistics
+```javascript
+// Alert Stats Structure
+{
+  notifications: number,  // Total notification count
+  sounds: number,        // Total sound alert count
+  totalAlerts: number,   // Combined total alerts
+  alertLogs: [{          // Detailed alert history
+    type: string,        // 'sound', 'notification', 'high', 'normal'
+    message: string,     // Alert description
+    timestamp: string    // ISO timestamp
+  }]
+}
+```
+
+### Alert Types
+1. High Priority
+   - Triggers both sound and notification
+   - Logged with 'high' type
+   - Immediate delivery
+
+2. Normal Priority
+   - Triggers notification only
+   - Logged with 'normal' type
+   - Standard delivery
+
+### Storage Management
+- Alert logs limited to 100 entries
+- Automatic cleanup of old entries
+- Efficient storage usage
+- Real-time sync with popup
+
+## Known Issues
+1. Sound playback may fail in some contexts
+2. Notification click handling needs improvement
+3. Storage cleanup could be more efficient
+
+## Future Improvements
+1. Add more alert customization options
+2. Implement alert categories
+3. Add export/import functionality
+4. Enhance error recovery
+5. Add alert scheduling features
+
+## Performance Considerations
+1. Storage Usage
+   - Monitor log size
+   - Implement cleanup strategies
+   - Optimize data structure
+
+2. Background Processing
+   - Minimize wake-ups
+   - Batch updates when possible
+   - Efficient message passing
+
+3. UI Responsiveness
+   - Lazy loading for logs
+   - Efficient DOM updates
+   - Optimized filtering
+
+## Testing Notes
+1. Alert Generation
+   - Test various priority levels
+   - Verify sound playback
+   - Check notification display
+
+2. Statistics Tracking
+   - Verify counter accuracy
+   - Test log rotation
+   - Check real-time updates
+
+3. Storage
+   - Test persistence
+   - Verify cleanup
+   - Check sync behavior
+
+## Development Guidelines
+1. Code Style
+   - Use ES6+ features
+   - Maintain consistent naming
+   - Document complex logic
+
+2. Error Handling
+   - Log all errors
+   - Implement recovery
+   - User-friendly messages
+
+3. Testing
+   - Unit test core functions
+   - Integration test alerts
+   - UI component testing

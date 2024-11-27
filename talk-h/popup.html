@@ -1,67 +1,356 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>Talk-H 文章提醒助手</title>
-    <link rel="stylesheet" href="css/popup.css">
+    <title>Talk-H 控制面板</title>
+    <style>
+        body {
+            width: 400px;
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 15px;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 16px;
+            margin: 0 0 10px 0;
+            color: #1565c0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .toggle {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s;
+        }
+        .toggle:hover {
+            background: #e0e0e0;
+        }
+        .toggle input {
+            margin-right: 8px;
+        }
+        .article {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin: 8px 0;
+            border-radius: 4px;
+        }
+        .article:hover {
+            background: #f5f5f5;
+        }
+        .article-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            line-height: 1.4;
+            color: #1565c0;
+        }
+        .article-meta {
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .article-summary {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            background: #f8f9fa;
+            padding: 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+        .priority-high {
+            color: #c62828;
+            font-weight: 600;
+        }
+        .empty {
+            text-align: center;
+            color: #666;
+            padding: 40px 20px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .status {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+            min-height: 16px;
+        }
+        .refresh-btn {
+            background: #1565c0;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .refresh-btn:hover {
+            background: #0d47a1;
+        }
+        .refresh-btn:active {
+            transform: translateY(1px);
+        }
+        #articles {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 0 -15px;
+            padding: 0 15px;
+        }
+        #articles::-webkit-scrollbar {
+            width: 8px;
+        }
+        #articles::-webkit-scrollbar-track {
+            background: #f5f5f5;
+        }
+        #articles::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+        #articles::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .last-fetch {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .articles {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .article.read {
+            opacity: 0.7;
+        }
+        .no-articles {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .stats-section {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        .stats-header {
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-title {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1565c0;
+        }
+        .log-container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .log-filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .log-filters select {
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .log-filters button {
+            padding: 4px 12px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .log-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+        }
+        .log-item:last-child {
+            border-bottom: none;
+        }
+        .log-time {
+            color: #666;
+            margin-right: 8px;
+        }
+        .log-type {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-right: 8px;
+        }
+        .log-type.sound {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .log-type.notification {
+            background: #f1f8e9;
+            color: #558b2f;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="status-bar">
-            <div class="db-status">
-                <span class="status-dot"></span>
-                <span class="status-text">数据库连接中...</span>
-            </div>
-            <div class="article-stats">
-                <span class="total-count">总文章: 0</span>
-                <span class="read-count">已读: 0</span>
-                <span class="unread-count">未读: 0</span>
-            </div>
-        </div>
-        <h2>未读文章</h2>
-        <div class="article-list">
-            <!-- 文章列表将通过 JavaScript 动态填充 -->
-        </div>
-        <div class="settings">
-            <h3>提醒设置</h3>
-            <label>
-                <input type="checkbox" id="enableSound" checked>
-                启用声音提醒
+    <div class="section">
+        <h2>提醒控制</h2>
+        <div class="controls">
+            <label class="toggle">
+                <input type="checkbox" id="notificationToggle" checked>
+                桌面通知
             </label>
-            <label>
-                <input type="checkbox" id="enableVoice" checked>
-                启用语音提醒
+            <label class="toggle">
+                <input type="checkbox" id="soundToggle" checked>
+                声音提醒
             </label>
-            <label>
-                <input type="checkbox" id="enablePreview" checked>
-                启用预览窗口
+            <label class="toggle">
+                <input type="checkbox" id="ttsToggle" checked>
+                语音播报
             </label>
-            <label>
-                <input type="checkbox" id="enableScreenFlash">
-                启用屏幕闪烁
+            <label class="toggle">
+                <input type="checkbox" id="floatingToggle" checked>
+                悬浮窗口
             </label>
-            <label>
-                <input type="checkbox" id="enableFloating" checked>
-                启用悬浮窗
+            <label class="toggle">
+                <input type="checkbox" id="fullscreenToggle" checked>
+                全屏提醒
             </label>
-            <label>
-                <input type="checkbox" id="enableFullScreen">
-                启用全屏提醒
-            </label>
-            <label>
-                <input type="checkbox" id="enableTabNotification" checked>
-                启用标签页提醒
-            </label>
-            <label>
-                <input type="checkbox" id="enableVibration" checked>
-                启用设备振动
-            </label>
-            <label>
-                <input type="checkbox" id="enableProgressive" checked>
-                启用渐进式提醒
+            <label class="toggle">
+                <input type="checkbox" id="flashToggle" checked>
+                屏幕闪烁
             </label>
         </div>
     </div>
+
+    <div class="section">
+        <div class="header">
+            <h2>文章列表</h2>
+            <div class="controls">
+                <div class="toggle-container">
+                    <label for="showRead">显示已读</label>
+                    <input type="checkbox" id="showRead">
+                </div>
+                <button id="refreshBtn" class="refresh-btn">刷新列表</button>
+            </div>
+        </div>
+        <div class="last-fetch" id="lastFetch"></div>
+        <div id="articles" class="articles">
+            <div class="empty">加载中...</div>
+        </div>
+        <div id="status" class="status"></div>
+    </div>
+
+    <div class="section">
+        <h2>提醒统计</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">总提醒次数</div>
+                <div class="stat-value" id="totalAlerts">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">声音提醒</div>
+                <div class="stat-value" id="soundAlerts">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">通知提醒</div>
+                <div class="stat-value" id="notificationAlerts">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>提醒日志</h2>
+        <div class="log-container">
+            <div class="log-filters">
+                <select id="logType">
+                    <option value="all">所有日志</option>
+                    <option value="sound">声音提醒</option>
+                    <option value="notification">通知提醒</option>
+                </select>
+                <button id="clearLogs">清除日志</button>
+            </div>
+            <div class="log-list" id="alertLogs">
+                <!-- 日志将通过JavaScript动态添加 -->
+            </div>
+        </div>
+    </div>
+
     <script src="js/popup.js"></script>
 </body>
-</html> 
+</html>
