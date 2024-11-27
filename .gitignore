@@ -14,4 +14,12 @@ build/
 Thumbs.db
 
 # Log files
-*.log 
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# Chrome Extension build files
+*.crx
+*.pem
