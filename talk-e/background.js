@@ -44,7 +44,7 @@ async function fetchNewArticles() {
       order: 'created_at.desc'
     });
 
-    const url = `${window.SUPABASE_CONFIG.url}/rest/v1/superbase_articles?${queryParams}`;
+    const url = `${window.SUPABASE_CONFIG.url}/rest/v1/articles?${queryParams}`;
     console.log('Fetching from URL:', url);
 
     const response = await fetch(url, {

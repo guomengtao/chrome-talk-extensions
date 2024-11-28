@@ -2,6 +2,7 @@
 const STORAGE_KEY = 'talk_e_articles';
 const UNREAD_KEY = 'talk_e_unread_count';
 const LAST_CHECK_KEY = 'talk_e_last_check';
+const READ_ARTICLES_KEY = 'talk_e_read_articles';
 
 // 格式化时间戳
 function formatDate(timestamp) {
@@ -26,111 +27,116 @@ function showStatus(message, isError = false) {
   }, 3000);
 }
 
+// 更新未读计数
+async function updateUnreadCounter() {
+  try {
+    const result = await chrome.storage.local.get([READ_ARTICLES_KEY, STORAGE_KEY]);
+    const readArticles = result[READ_ARTICLES_KEY] || [];
+    const articles = result[STORAGE_KEY] || [];
+    
+    const unreadCount = articles.filter(article => !readArticles.includes(article.id)).length;
+    
+    // 更新弹窗中的未读计数
+    const counter = document.getElementById('unreadCounter');
+    if (unreadCount > 0) {
+      counter.textContent = unreadCount;
+      counter.style.display = 'block';
+    } else {
+      counter.style.display = 'none';
+    }
+    
+    // 更新扩展图标上的未读计数
+    if (unreadCount > 0) {
+      await chrome.action.setBadgeText({ text: unreadCount.toString() });
+      await chrome.action.setBadgeBackgroundColor({ color: '#ff4081' });
+    } else {
+      await chrome.action.setBadgeText({ text: '' });
+    }
+  } catch (error) {
+    console.error('更新未读计数失败:', error);
+  }
+}
+
 // 更新文章列表
 async function updateArticleList() {
   const articleList = document.getElementById('articleList');
   
   try {
-    console.log('开始获取文章列表...');
-    console.log('Supabase 配置:', {
-      url: window.SUPABASE_CONFIG.url,
-      tableName: window.SUPABASE_CONFIG.tableName,
-      hasApiKey: !!window.SUPABASE_CONFIG.getApiKey()
-    });
-
-    // 从 Supabase 获取最新文章
-    const url = `${window.SUPABASE_CONFIG.url}/rest/v1/${window.SUPABASE_CONFIG.tableName}?select=*&order=created_at.desc`;
-    console.log('请求 URL:', url);
+    // 获取已读文章列表
+    const result = await chrome.storage.local.get([READ_ARTICLES_KEY, STORAGE_KEY]);
+    const readArticles = result[READ_ARTICLES_KEY] || [];
     
+    console.log('开始获取文章列表...');
+    const url = `${window.SUPABASE_CONFIG.url}/rest/v1/${window.SUPABASE_CONFIG.tableName}?select=*&order=created_at.desc`;
     const apiKey = window.SUPABASE_CONFIG.getApiKey();
-    console.log('API Key 可用:', !!apiKey);
 
     const response = await fetch(url, {
       headers: {
         'apikey': apiKey,
         'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
       }
     });
 
-    console.log('响应状态:', response.status);
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('获取文章失败:', errorText);
-      throw new Error(`获取文章失败: ${response.status} ${errorText}`);
+      throw new Error('获取文章失败');
     }
 
-    const newArticles = await response.json();
-    console.log('获取到的文章:', newArticles);
+    const articles = await response.json();
+    
+    // 保存文章到本地存储
+    await chrome.storage.local.set({ [STORAGE_KEY]: articles });
+    
+    // 清空文章列表
+    articleList.innerHTML = '';
 
-    if (!newArticles || newArticles.length === 0) {
-      console.log('没有找到文章');
-      articleList.innerHTML = '<div class="empty-message">暂无文章</div>';
-      return;
-    }
+    // 渲染文章列表
+    articles.forEach(article => {
+      const isRead = readArticles.includes(article.id);
+      const articleElement = document.createElement('div');
+      articleElement.className = `article-item ${isRead ? 'read' : 'unread'}`;
+      articleElement.innerHTML = `
+        <div class="article-title">${article.title}</div>
+        <div class="article-content">${article.content}</div>
+        <div class="article-meta">${formatDate(article.created_at)}</div>
+        <button class="mark-read-btn ${isRead ? 'read' : 'unread'}">${isRead ? '已读' : '标记已读'}</button>
+      `;
 
-    // 过滤掉已删除的文章
-    const activeArticles = newArticles.filter(article => !article.is_deleted);
-    console.log('活跃文章数量:', activeArticles.length);
+      // 添加标记已读按钮事件
+      const markReadBtn = articleElement.querySelector('.mark-read-btn');
+      markReadBtn.addEventListener('click', async () => {
+        await markAsRead(article.id);
+        articleElement.className = 'article-item read';
+        markReadBtn.className = 'mark-read-btn read';
+        markReadBtn.textContent = '已读';
+        await updateUnreadCounter();
+      });
 
-    if (activeArticles.length === 0) {
-      console.log('没有活跃的文章');
-      articleList.innerHTML = '<div class="empty-message">暂无文章</div>';
-      return;
-    }
+      articleList.appendChild(articleElement);
+    });
 
-    articleList.innerHTML = activeArticles.map(article => `
-      <div class="article-item ${article.read ? 'read' : 'unread'}" data-id="${article.id}">
-        <div class="article-title">${article.title || ''}</div>
-        <div class="article-content">${article.content || ''}</div>
-        <div class="article-meta">
-          <span>创建时间: ${formatDate(article.created_at)}</span>
-          <span>更新时间: ${formatDate(article.updated_at)}</span>
-        </div>
-        <div class="article-actions">
-          <button class="read-btn" onclick="markAsRead(${article.id})">${article.read ? '已读' : '标记已读'}</button>
-        </div>
-      </div>
-    `).join('');
-
+    // 更新未读计数
+    await updateUnreadCounter();
+    
   } catch (error) {
     console.error('更新文章列表失败:', error);
-    showStatus(error.message, true);
-    articleList.innerHTML = '<div class="empty-message">加载文章失败</div>';
+    showStatus('获取文章失败，请稍后重试', true);
   }
 }
 
 // 标记文章为已读
 async function markAsRead(articleId) {
   try {
-    const data = await chrome.storage.local.get([STORAGE_KEY, UNREAD_KEY]);
-    const articles = data[STORAGE_KEY] || [];
-    const unreadCount = data[UNREAD_KEY] || 0;
-
-    // 更新文章的已读状态
-    const updatedArticles = articles.map(article => {
-      if (article.id === articleId && !article.read) {
-        return { ...article, read: true };
-      }
-      return article;
-    });
-
-    // 更新存储
-    await chrome.storage.local.set({
-      [STORAGE_KEY]: updatedArticles,
-      [UNREAD_KEY]: Math.max(0, unreadCount - 1)
-    });
-
-    // 更新界面
-    updateArticleList();
+    const result = await chrome.storage.local.get(READ_ARTICLES_KEY);
+    const readArticles = result[READ_ARTICLES_KEY] || [];
     
-    // 更新徽章
-    chrome.runtime.sendMessage({ action: 'updateBadge' });
-    
-    showStatus('文章已标记为已读');
+    if (!readArticles.includes(articleId)) {
+      readArticles.push(articleId);
+      await chrome.storage.local.set({ [READ_ARTICLES_KEY]: readArticles });
+      showStatus('已标记为已读');
+    }
   } catch (error) {
     console.error('标记已读失败:', error);
-    showStatus(error.message, true);
+    showStatus('标记已读失败，请重试', true);
   }
 }
 
@@ -139,10 +145,3 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('页面加载完成，开始初始化...');
   updateArticleList();
 });
-
-// 监听存储变化
-chrome.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === 'local' && (changes[STORAGE_KEY] || changes[UNREAD_KEY])) {
-    updateArticleList();
-  }
-}); 

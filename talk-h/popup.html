@@ -1,354 +1,450 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Talk-H 控制面板</title>
+    <title>Talk-H Alert</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        body {
-            width: 400px;
-            font-family: system-ui, -apple-system, sans-serif;
-            margin: 0;
-            padding: 15px;
-            color: #333;
+        :root {
+            --primary-color: #2196F3;
+            --secondary-color: #1976D2;
+            --success-color: #4CAF50;
+            --error-color: #F44336;
+            --text-color: #333;
+            --bg-color: #fff;
         }
-        .section {
+
+        body {
+            width: 320px;
+            margin: 0;
+            padding: 16px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-color);
+            background: var(--bg-color);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 20px;
         }
-        h2 {
-            font-size: 16px;
-            margin: 0 0 10px 0;
-            color: #1565c0;
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
         }
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        .toggle {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            background: #f5f5f5;
-            border-radius: 4px;
-            cursor: pointer;
-            user-select: none;
-            transition: background-color 0.2s;
-        }
-        .toggle:hover {
-            background: #e0e0e0;
-        }
-        .toggle input {
-            margin-right: 8px;
-        }
-        .article {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin: 8px 0;
-            border-radius: 4px;
-        }
-        .article:hover {
-            background: #f5f5f5;
-        }
-        .article-title {
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 6px;
-            line-height: 1.4;
-            color: #1565c0;
-        }
-        .article-meta {
-            font-size: 12px;
-            color: #666;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-        .article-summary {
-            font-size: 12px;
-            color: #666;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            background: #f8f9fa;
-            padding: 6px;
-            border-radius: 4px;
-            margin-top: 4px;
-        }
-        .priority-high {
-            color: #c62828;
+
+        .header-title {
+            font-size: 18px;
             font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
         }
-        .empty {
-            text-align: center;
-            color: #666;
-            padding: 40px 20px;
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .section {
             background: #f5f5f5;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .material-icons {
+            font-size: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .control-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        select {
+            padding: 8px;
             border-radius: 4px;
-            margin: 10px 0;
+            border: 1px solid #ddd;
+            background: white;
+            width: 150px;
         }
-        .status {
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-            margin-top: 10px;
-            min-height: 16px;
-        }
-        .refresh-btn {
-            background: #1565c0;
+
+        button {
+            background: var(--primary-color);
             color: white;
             border: none;
             padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
-            width: 100%;
-            margin-bottom: 10px;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
-        .refresh-btn:hover {
-            background: #0d47a1;
-        }
-        .refresh-btn:active {
-            transform: translateY(1px);
-        }
-        #articles {
-            max-height: 400px;
-            overflow-y: auto;
-            margin: 0 -15px;
-            padding: 0 15px;
-        }
-        #articles::-webkit-scrollbar {
-            width: 8px;
-        }
-        #articles::-webkit-scrollbar-track {
-            background: #f5f5f5;
-        }
-        #articles::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 4px;
-        }
-        #articles::-webkit-scrollbar-thumb:hover {
-            background: #999;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .toggle-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
+            transition: background-color 0.3s;
         }
-        .last-fetch {
-            font-size: 12px;
-            color: #666;
-            margin-top: 4px;
+
+        button:hover {
+            background: var(--secondary-color);
         }
-        .articles {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .article.read {
-            opacity: 0.7;
-        }
-        .no-articles {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-        .stats-section {
-            margin-top: 20px;
-            padding: 16px;
-            background: #f5f5f5;
-            border-radius: 4px;
-        }
-        .stats-header {
-            font-weight: 500;
-            margin-bottom: 12px;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .stat-card {
-            background: #fff;
+
+        .preview-container {
+            display: none;
+            margin-top: 12px;
             padding: 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .stat-title {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        .stat-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: #1565c0;
-        }
-        .log-container {
-            background: #fff;
-            border-radius: 8px;
-            padding: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .log-filters {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .log-filters select {
-            padding: 4px 8px;
+            background: white;
             border-radius: 4px;
             border: 1px solid #ddd;
         }
-        .log-filters button {
-            padding: 4px 12px;
-            background: #f44336;
+
+        .preview-container.show {
+            display: block;
+        }
+
+        .status {
+            text-align: center;
+            padding: 8px;
+            margin-top: 16px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .status.success {
+            background: #E8F5E9;
+            color: var(--success-color);
+            opacity: 1;
+        }
+
+        .status.error {
+            background: #FFEBEE;
+            color: var(--error-color);
+            opacity: 1;
+        }
+
+        .sound-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .play-button {
+            background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
-        .log-list {
+        
+        .play-button:hover {
+            background: var(--secondary-color);
+        }
+        
+        .play-button .material-icons {
+            font-size: 20px;
+        }
+        
+        .play-button.playing {
+            background: var(--error-color);
+        }
+
+        .alert-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .alert-log-table {
             max-height: 300px;
             overflow-y: auto;
-        }
-        .log-item {
+            background: white;
+            border-radius: 4px;
             padding: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
             border-bottom: 1px solid #eee;
             font-size: 12px;
         }
-        .log-item:last-child {
-            border-bottom: none;
+
+        th {
+            background: #f5f5f5;
+            position: sticky;
+            top: 0;
         }
-        .log-time {
-            color: #666;
-            margin-right: 8px;
+
+        .status-success {
+            color: var(--success-color);
         }
-        .log-type {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 11px;
-            margin-right: 8px;
+
+        .status-error {
+            color: var(--error-color);
         }
-        .log-type.sound {
-            background: #e3f2fd;
-            color: #1565c0;
+
+        .alert-type {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
         }
-        .log-type.notification {
-            background: #f1f8e9;
-            color: #558b2f;
+
+        .alert-type .material-icons {
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="section">
-        <h2>提醒控制</h2>
-        <div class="controls">
-            <label class="toggle">
-                <input type="checkbox" id="notificationToggle" checked>
-                桌面通知
-            </label>
-            <label class="toggle">
-                <input type="checkbox" id="soundToggle" checked>
-                声音提醒
-            </label>
-            <label class="toggle">
-                <input type="checkbox" id="ttsToggle" checked>
-                语音播报
-            </label>
-            <label class="toggle">
-                <input type="checkbox" id="floatingToggle" checked>
-                悬浮窗口
-            </label>
-            <label class="toggle">
-                <input type="checkbox" id="fullscreenToggle" checked>
-                全屏提醒
-            </label>
-            <label class="toggle">
-                <input type="checkbox" id="flashToggle" checked>
-                屏幕闪烁
-            </label>
-        </div>
+    <div class="header">
+        <div class="header-icon" style="background-image: url('images/icon48.png'); background-size: cover; width: 32px; height: 32px;"></div>
+        <h1 class="header-title">Talk-H Alert</h1>
     </div>
 
-    <div class="section">
-        <div class="header">
-            <h2>文章列表</h2>
-            <div class="controls">
-                <div class="toggle-container">
-                    <label for="showRead">显示已读</label>
-                    <input type="checkbox" id="showRead">
+    <div class="container">
+        <div class="section">
+            <div class="section-title">
+                <span class="material-icons">notifications</span>
+                通知设置
+            </div>
+            <div class="control-group">
+                <div class="control-item">
+                    <span>桌面通知</span>
+                    <label class="switch">
+                        <input type="checkbox" id="notificationToggle">
+                        <span class="slider"></span>
+                    </label>
                 </div>
-                <button id="refreshBtn" class="refresh-btn">刷新列表</button>
+                <div class="control-item">
+                    <span>声音提醒</span>
+                    <label class="switch">
+                        <input type="checkbox" id="soundToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
         </div>
-        <div class="last-fetch" id="lastFetch"></div>
-        <div id="articles" class="articles">
-            <div class="empty">加载中...</div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="material-icons">volume_up</span>
+                声音设置
+            </div>
+            <div class="control-group">
+                <div class="control-item">
+                    <span>提示音选择</span>
+                    <select id="soundSelect">
+                        <option value="complete.mp3">默认提示音</option>
+                        <option value="ding.mp3">清脆提示音</option>
+                        <option value="bell.mp3">铃声提示音</option>
+                        <option value="chime.mp3">悦耳提示音</option>
+                    </select>
+                </div>
+                <button id="previewSound" type="button">
+                    <span class="material-icons">play_arrow</span>
+                    试听声音
+                </button>
+            </div>
         </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="material-icons">preview</span>
+                通知预览
+            </div>
+            <div class="control-group">
+                <button id="testNotification" type="button">
+                    <span class="material-icons">notifications_active</span>
+                    测试通知
+                </button>
+                <button id="showPreview" type="button">
+                    <span class="material-icons">visibility</span>
+                    显示预览
+                </button>
+                <div id="previewContainer" class="preview-container">
+                    <div style="font-weight: 600; margin-bottom: 8px;">通知样式预览</div>
+                    <div style="background: #f5f5f5; padding: 12px; border-radius: 4px;">
+                        <div style="font-weight: 500;">Talk-H Alert</div>
+                        <div style="margin-top: 4px; color: #666;">这是一条测试通知消息</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="material-icons">volume_up</span>
+                Sound Test
+            </div>
+            <div class="control-group">
+                <div class="sound-card">
+                    <span>Notification</span>
+                    <button class="play-button" data-sound="notification">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                </div>
+                <div class="sound-card">
+                    <span>Complete</span>
+                    <button class="play-button" data-sound="complete">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                </div>
+                <div class="sound-card">
+                    <span>Alert</span>
+                    <button class="play-button" data-sound="alert">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                </div>
+                <div class="sound-card">
+                    <span>Ding</span>
+                    <button class="play-button" data-sound="ding">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="material-icons">analytics</span>
+                提醒日志
+            </div>
+            <div class="alert-stats">
+                <div class="stat-item">
+                    <span class="stat-label">总提醒次数</span>
+                    <span class="stat-value" id="totalAlerts">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">声音提醒</span>
+                    <span class="stat-value" id="soundAlerts">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">通知提醒</span>
+                    <span class="stat-value" id="notificationAlerts">0</span>
+                </div>
+            </div>
+            <div class="alert-log-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>时间</th>
+                            <th>文章</th>
+                            <th>提醒方式</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alertLogBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div id="status" class="status"></div>
-    </div>
-
-    <div class="section">
-        <h2>提醒统计</h2>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-title">总提醒次数</div>
-                <div class="stat-value" id="totalAlerts">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">声音提醒</div>
-                <div class="stat-value" id="soundAlerts">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">通知提醒</div>
-                <div class="stat-value" id="notificationAlerts">0</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>提醒日志</h2>
-        <div class="log-container">
-            <div class="log-filters">
-                <select id="logType">
-                    <option value="all">所有日志</option>
-                    <option value="sound">声音提醒</option>
-                    <option value="notification">通知提醒</option>
-                </select>
-                <button id="clearLogs">清除日志</button>
-            </div>
-            <div class="log-list" id="alertLogs">
-                <!-- 日志将通过JavaScript动态添加 -->
-            </div>
-        </div>
     </div>
 
     <script src="js/popup.js"></script>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sound Player</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #9C27B0;
+            --primary-light: #E1BEE7;
+            --primary-dark: #7B1FA2;
+            --text-color: #333;
+            --border-radius: 8px;
+            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --card-bg: #fff;
+            --hover-bg: #F3E5F5;
+        }
+
+        body {
+            width: 350px;
+            max-height: 500px;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: var(--text-color);
+            background: #fafafa;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            background-size: cover;
+            border-radius: 8px;
+        }
+
+        .header-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .container {
+            padding: 16px;
+            max-height: calc(500px - 64px);
+            overflow-y: auto;
+        }
+
+        .sound-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sound-card {
+            background: var(--card-bg);
+            border: 1px solid var(--primary-light);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .sound-card:hover {
+            background: var(--hover-bg);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .sound-icon {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .sound-info {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .sound-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-color);
+        }
+
+        .sound-duration {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .sound-controls {
+            display: flex;
+            gap: 4px;
+            min-width: 72px;
+        }
+
+        .play-button,
+        .delete-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-button {
+            color: var(--primary-color);
+        }
+
+        .delete-button {
+            color: #dc3545;
+        }
+
+        .play-button:hover {
+            background: var(--primary-light);
+            transform: scale(1.1);
+        }
+
+        .delete-button:hover {
+            background: rgba(220, 53, 69, 0.1);
+            transform: scale(1.1);
+        }
+
+        .material-icons {
+            font-size: 20px;
+        }
+
+        .upload-section {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 1px solid var(--primary-light);
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .upload-section p {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .upload-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .upload-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
+        }
+
+        #sound-upload {
+            display: none;
+        }
+
+        .playing {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-icon" style="background-image: url('images/icon48.png');"></div>
+        <h1 class="header-title">Sound Player</h1>
+    </div>
+
+    <div class="container">
+        <div class="sound-grid" id="sound-grid">
+            <!-- Default sounds -->
+            <div class="sound-card">
+                <div class="sound-icon">
+                    <span class="material-icons">notifications</span>
+                </div>
+                <div class="sound-info">
+                    <div class="sound-name">Notification</div>
+                    <div class="sound-duration">System Sound</div>
+                </div>
+                <div class="sound-controls">
+                    <button class="play-button" data-sound="notification">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sound-card">
+                <div class="sound-icon">
+                    <span class="material-icons">done_all</span>
+                </div>
+                <div class="sound-info">
+                    <div class="sound-name">Complete</div>
+                    <div class="sound-duration">System Sound</div>
+                </div>
+                <div class="sound-controls">
+                    <button class="play-button" data-sound="complete">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sound-card">
+                <div class="sound-icon">
+                    <span class="material-icons">warning</span>
+                </div>
+                <div class="sound-info">
+                    <div class="sound-name">Alert</div>
+                    <div class="sound-duration">System Sound</div>
+                </div>
+                <div class="sound-controls">
+                    <button class="play-button" data-sound="alert">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sound-card">
+                <div class="sound-icon">
+                    <span class="material-icons">check_circle</span>
+                </div>
+                <div class="sound-info">
+                    <div class="sound-name">Ding</div>
+                    <div class="sound-duration">System Sound</div>
+                </div>
+                <div class="sound-controls">
+                    <button class="play-button" data-sound="ding">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <p>Want to add custom sounds?</p>
+            <input type="file" id="sound-upload" accept="audio/*" style="display: none;">
+            <button class="upload-button" id="upload-trigger">
+                <span class="material-icons">upload_file</span>
+                Upload Sound
+            </button>
+        </div>
+    </div>
+
+    <script src="js/sound-manager.js"></script>
+    <script src="js/popup.js"></script>
+    <script src="js/tests/sound-test.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Talk-H 提醒测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1565c0;
+            margin-bottom: 20px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        #testNormal {
+            background-color: #1565c0;
+            color: white;
+        }
+        #testNormal:hover {
+            background-color: #0d47a1;
+        }
+        #testHigh {
+            background-color: #c62828;
+            color: white;
+        }
+        #testHigh:hover {
+            background-color: #b71c1c;
+        }
+        .log-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        #log {
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Talk-H 提醒测试页面</h1>
+        <p>使用下面的按钮测试不同优先级的文章提醒：</p>
+        <div class="button-group">
+            <button id="testNormal">测试普通文章</button>
+            <button id="testHigh">测试重要文章</button>
+        </div>
+        <div class="log-container">
+            <pre id="log">等待测试...</pre>
+        </div>
+    </div>
+    <script src="js/test.js"></script>
+</body>
+</html>

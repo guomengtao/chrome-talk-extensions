@@ -29,7 +29,8 @@
             border: 1px solid #e0e0e0;
             border-radius: 4px;
             margin-bottom: 10px;
-            transition: box-shadow 0.2s;
+            transition: all 0.2s;
+            position: relative;
         }
         .article:hover {
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -37,10 +38,25 @@
         .article.high-priority {
             border-left: 4px solid #c62828;
         }
+        .article.read {
+            opacity: 0.7;
+            background-color: #f8f9fa;
+        }
         .article-title {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .read-badge {
+            font-size: 12px;
+            padding: 2px 6px;
+            background-color: #e0e0e0;
+            color: #666;
+            border-radius: 4px;
+            font-weight: normal;
         }
         .article-meta {
             font-size: 14px;
@@ -50,12 +66,42 @@
         .article-summary {
             color: #333;
             line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .article-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .action-btn:not(.mark-read) {
+            background-color: #1565c0;
+            color: white;
+        }
+        .action-btn:not(.mark-read):hover {
+            background-color: #0d47a1;
+        }
+        .mark-read {
+            background-color: #f5f5f5;
+            color: #666;
+        }
+        .mark-read:hover {
+            background-color: #e0e0e0;
         }
         .toolbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
         }
         button {
             padding: 8px 16px;
@@ -66,19 +112,46 @@
             background-color: #1565c0;
             color: white;
             transition: background-color 0.2s;
+            margin-left: 10px;
         }
         button:hover {
             background-color: #0d47a1;
+        }
+        #clearBtn {
+            background-color: #dc3545;
+        }
+        #clearBtn:hover {
+            background-color: #c82333;
         }
         .empty-state {
             text-align: center;
             padding: 40px;
             color: #666;
+            font-size: 16px;
         }
         .status {
             font-size: 14px;
             color: #666;
             margin-left: 10px;
+            min-width: 120px;
+            display: inline-block;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .status {
+                margin-left: 0;
+                margin-top: 10px;
+            }
         }
     </style>
 </head>

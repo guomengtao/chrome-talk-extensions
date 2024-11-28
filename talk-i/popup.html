@@ -7,19 +7,63 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>文章列表</h1>
-            <div class="filters">
-                <button class="filter-btn active" data-filter="all">全部</button>
-                <button class="filter-btn" data-filter="today">今日</button>
-                <button class="filter-btn" data-filter="week">本周</button>
+        <div class="view-container">
+            <!-- 文章列表视图 -->
+            <div class="list-view">
+                <div class="stats-bar">
+                    <div class="db-status">
+                        <span class="status-dot"></span>
+                        <span class="status-text">正在连接数据库...</span>
+                    </div>
+                    <div class="article-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">总文章:</span>
+                            <span class="total-count">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">今日新增:</span>
+                            <span class="today-count">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">本周新增:</span>
+                            <span class="week-count">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header">
+                    <h1>文章列表</h1>
+                    <div class="filters">
+                        <button class="filter-btn active" data-filter="all">全部</button>
+                        <button class="filter-btn" data-filter="today">今日</button>
+                        <button class="filter-btn" data-filter="week">本周</button>
+                    </div>
+                </div>
+                <div class="article-list">
+                    <!-- 文章列表将通过 JavaScript 动态填充 -->
+                </div>
+            </div>
+
+            <!-- 文章详情视图 -->
+            <div class="detail-view hidden">
+                <div class="detail-header">
+                    <button class="back-btn">返回</button>
+                    <h2 class="detail-title"></h2>
+                </div>
+                <div class="detail-content"></div>
+                <div class="detail-meta">
+                    <span class="detail-time"></span>
+                    <a class="detail-url" target="_blank">原文链接</a>
+                </div>
             </div>
         </div>
-        <div class="article-list">
-            <!-- 文章列表将通过 JavaScript 动态填充 -->
-        </div>
     </div>
+    <div id="status" class="status"></div>
+    
+    <!-- 加载 Supabase 客户端库 -->
     <script src="js/lib/supabase.min.js"></script>
+    
+    <!-- 使用 type="module" 确保可以使用 import/export -->
+    <script type="module" src="js/supabase.js"></script>
     <script type="module" src="js/popup.js"></script>
 </body>
-</html> 
+</html>

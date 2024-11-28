@@ -13,6 +13,67 @@
 - [ ] 书签系统
 - [ ] 离线阅读
 
+## 开发日志
+
+### 2024-01-10
+#### Added In-Popup Article Detail View
+- 实现平滑过渡列表和详情视图
+- 添加文章内容显示在弹出窗口
+- 集成原始 URL 链接
+- 提高 UI/UX 动画
+
+#### Database Schema Updates
+- 创建文章表格，包含全面字段
+- 实现行级安全性
+- 添加必要索引以提高性能
+- 配置适当时间戳和软删除
+
+#### UI Improvements
+- 提高文章列表布局
+- 添加加载状态
+- 提高错误消息
+- 实现响应式设计
+
+### 2024-01-09
+#### Supabase Integration
+- 设置 Supabase 客户端
+- 配置身份验证
+- 实现数据查询
+- 添加错误处理
+
+#### Article List Features
+- 添加基于时间的过滤
+- 实现列表分页
+- 提高数据加载
+- 添加重试机制
+
+### 2024-01-08
+#### Initial Setup
+- 创建项目结构
+- 设置 Chrome 扩展清单
+- 实现基本 UI
+- 添加开发文档
+
+## 技术说明
+
+### Why Supabase?
+1. 实时能力
+2. 内置身份验证
+3. PostgreSQL 力量
+4. 简单 API 集成
+
+### Architecture Choices
+1. 模块化代码结构
+2. 事件驱动设计
+3. 进步增强
+4. 移动优先方法
+
+### Security Considerations
+1. API 密钥保护
+2. 内容清理
+3. XSS 预防
+4. 安全数据处理
+
 ## 问题记录
 
 ### 已解决

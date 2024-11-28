@@ -80,4 +80,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         browser.getArticle(message.id).then(sendResponse);
         return true;
     }
-}); 
+});
+
+// 检查数据库连接状态
+const checkConnection = async () => {
+    try {
+        const { data, error } = await supabase
+            .from('superbase_articles')
+            .select('count');
+        
+        if (error) {
+            console.error('数据库连接失败:', error);
+            return false;
+        }
+        
+        console.log('数据库连接成功，文章数量:', data[0].count);
+        return true;
+    } catch (error) {
+        console.error('数据库连接错误:', error);
+        return false;
+    }
+};
+
+// 重试连接
+const retryConnection = async (maxRetries = 3) => {
+    let retries = 0;
+    while (retries < maxRetries) {
+        if (await checkConnection()) {
+            return true;
+        }
+        retries++;
+        await new Promise(r => setTimeout(r, 1000 * retries));
+    }
+    return false;
+}; 

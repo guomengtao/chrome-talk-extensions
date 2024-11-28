@@ -124,58 +124,182 @@
     - 阅读进度
     - 收藏功能
 
-## 常见问题解决方案
+## 开发笔记
 
-### 1. 数据库连接问题
-    // 检查连接
-    const checkConnection = async () => {
-        try {
-            const { data, error } = await supabase
-                .from('superbase_articles')
-                .select('count');
-            if (error) throw error;
-            console.log('连接成功');
-        } catch (error) {
-            console.error('连接失败:', error);
-        }
-    };
+### Talk-H 插件开发记录
 
-### 2. 消息同步问题
-    // 消息重试机制
-    const sendMessageWithRetry = async (message, maxRetries = 3) => {
-        let retries = 0;
-        while (retries < maxRetries) {
-            try {
-                await sendMessage(message);
-                break;
-            } catch (error) {
-                retries++;
-                await new Promise(r => setTimeout(r, 1000 * retries));
-            }
-        }
-    };
+### 2024-01-20
+- 添加提醒日志系统
+- 实现统计功能
+- 优化声音播放
+- 改进错误处理
 
-### 3. 性能优化技巧
-    // 使用防抖
-    const debounce = (fn, delay) => {
-        let timer = null;
-        return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => fn(...args), delay);
-        };
-    };
+#### 技术细节
+1. 提醒日志
+   ```javascript
+   - 记录时间戳
+   - 保存文章信息
+   - 跟踪提醒方式
+   - 存储执行状态
+   ```
 
-    // 使用节流
-    const throttle = (fn, delay) => {
-        let last = 0;
-        return (...args) => {
-            const now = Date.now();
-            if (now - last > delay) {
-                fn(...args);
-                last = now;
-            }
-        };
-    };
+2. 统计功能
+   ```javascript
+   - 计算总提醒次数
+   - 分类统计声音和通知
+   - 记录成功/失败率
+   - 生成统计报告
+   ```
+
+3. 声音系统
+   ```javascript
+   - 优化加载机制
+   - 改进播放控制
+   - 添加音量调节
+   - 实现音效预览
+   ```
+
+### 2024-01-10
+- 实现基础功能
+- 集成 Supabase
+- 添加通知系统
+- 设计用户界面
+
+#### 实现细节
+1. 文章管理
+   ```javascript
+   - 获取文章列表
+   - 更新阅读状态
+   - 管理未读计数
+   - 同步本地存储
+   ```
+
+2. 通知系统
+   ```javascript
+   - 创建通知
+   - 处理点击事件
+   - 更新徽章
+   - 管理权限
+   ```
+
+## Talk-J 插件开发记录
+
+### 2024-01-20
+- 完成音频系统
+- 添加控制界面
+- 实现效果处理
+- 优化性能
+
+#### 技术细节
+1. 音频引擎
+   ```javascript
+   - 加载音频文件
+   - 处理音频流
+   - 应用音频效果
+   - 控制播放状态
+   ```
+
+2. 用户界面
+   ```javascript
+   - 设计控制面板
+   - 实现音量调节
+   - 添加效果选择
+   - 显示播放状态
+   ```
+
+### 2024-01-10
+- 初始化项目
+- 设计架构
+- 实现基础功能
+- 测试音频处理
+
+#### 实现细节
+1. 项目结构
+   ```
+   talk-j/
+   ├── js/
+   │   ├── audio-engine.js
+   │   ├── controls.js
+   │   └── background.js
+   ├── css/
+   │   └── styles.css
+   └── html/
+       └── popup.html
+   ```
+
+2. 核心功能
+   ```javascript
+   - 音频播放
+   - 音量控制
+   - 效果处理
+   - 状态管理
+   ```
+
+## 通用开发笔记
+
+### 最佳实践
+1. 代码组织
+   - 模块化设计
+   - 清晰的命名
+   - 完整的注释
+   - 错误处理
+
+2. 性能优化
+   - 资源懒加载
+   - 使用缓存
+   - 异步处理
+   - 内存管理
+
+3. 安全考虑
+   - 最小权限
+   - 数据加密
+   - 安全通信
+   - 输入验证
+
+### 常见问题解决
+1. 音频播放
+   - 问题：音频加载延迟
+   - 解决：预加载和缓存
+   - 状态：已修复
+   - 验证：通过测试
+
+2. 通知显示
+   - 问题：通知权限
+   - 解决：优化请求流程
+   - 状态：已修复
+   - 验证：已确认
+
+### 待办事项
+1. 高优先级
+   - [ ] 完善错误处理
+   - [ ] 添加单元测试
+   - [ ] 优化性能
+   - [ ] 改进界面
+
+2. 中优先级
+   - [ ] 添加新功能
+   - [ ] 更新文档
+   - [ ] 代码重构
+   - [ ] 添加示例
+
+### 技术债务
+1. 代码质量
+   - 需要重构的模块
+   - 待优化的算法
+   - 待改进的架构
+   - 待更新的依赖
+
+2. 文档完善
+   - API 文档
+   - 使用说明
+   - 开发指南
+   - 示例代码
+
+## 参考资源
+- [Chrome Extension API](https://developer.chrome.com/docs/extensions/)
+- [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [Supabase 文档](https://supabase.io/docs)
+- [Material Design](https://material.io/)
 
 ## 开发经验总结
 

@@ -23,7 +23,7 @@ class ArticleNotifier {
             sounds: 0,
             totalAlerts: 0,
             alertTimes: [],
-            alertLogs: []  // 新增日志数组
+            alertLogs: []
         };
         this.initialize();
     }
@@ -31,24 +31,19 @@ class ArticleNotifier {
     async initialize() {
         console.log('ArticleNotifier initialized');
         
-        // Load data from storage
-        const data = await chrome.storage.local.get([
-            'readArticles', 
-            'lastFetchTime',
-            'alertStats'
-        ]);
-
-        if (data.readArticles) {
-            this.readArticles = new Set(data.readArticles);
+        // 从存储中恢复状态
+        const stored = await chrome.storage.local.get(['alertStats', 'lastFetchTime', 'readArticles']);
+        if (stored.alertStats) {
+            this.alertStats = stored.alertStats;
         }
-        if (data.lastFetchTime) {
-            this.lastFetchTime = new Date(data.lastFetchTime);
+        if (stored.lastFetchTime) {
+            this.lastFetchTime = new Date(stored.lastFetchTime);
         }
-        if (data.alertStats) {
-            this.alertStats = data.alertStats;
+        if (stored.readArticles) {
+            this.readArticles = new Set(stored.readArticles);
         }
-
-        this.initializeBadge();
+        
+        await this.initializeBadge();
         this.startPeriodicFetch();
     }
 
@@ -191,83 +186,154 @@ class ArticleNotifier {
         await this.logAlert('notification', `显示通知: ${article.title}`);
     }
 
-    async processNewArticles(articles) {
-        console.log('Processing new articles...');
-        let newArticlesFound = false;
-        
-        for (const article of articles) {
-            if (!this.readArticles.has(article.id)) {
-                console.log('New article found:', article.title);
-                newArticlesFound = true;
-                
-                this.readArticles.add(article.id);
-                
-                // 根据优先级决定提醒方式
-                if (article.priority === 'high') {
-                    await this.showNotification(article);
-                    await this.playNotificationSound();
-                    await this.logAlert('high', `高优先级文章: ${article.title}`);
-                } else {
-                    await this.showNotification(article);
-                    await this.logAlert('normal', `普通文章: ${article.title}`);
+    async processArticleImages(article) {
+        try {
+            if (!article.image_url) {
+                return article;
+            }
+
+            // 尝试下载图片，如果失败则继续处理文章但不包含图片
+            try {
+                await fetch(article.image_url);
+            } catch (error) {
+                console.warn('无法下载图片:', error);
+                article.image_url = null;
+            }
+            
+            return article;
+        } catch (error) {
+            console.error('处理文章图片时出错:', error);
+            return article;
+        }
+    }
+
+    async processNewArticles(newArticles) {
+        if (!Array.isArray(newArticles) || newArticles.length === 0) {
+            return;
+        }
+
+        try {
+            // 获取用户设置
+            const { alertControls } = await chrome.storage.local.get('alertControls');
+            const settings = alertControls || { notification: true, sound: true };
+
+            for (const article of newArticles) {
+                // 播放提示音
+                if (settings.sound) {
+                    try {
+                        const audio = new Audio(chrome.runtime.getURL('sounds/notification.mp3'));
+                        await audio.play();
+                        
+                        this.alertStats.sounds++;
+                        await this.logAlert('sound', '播放了新文章提示音');
+                    } catch (error) {
+                        console.error('Error playing sound:', error);
+                    }
                 }
+
+                // 显示通知
+                if (settings.notification) {
+                    try {
+                        const options = {
+                            type: 'basic',
+                            iconUrl: chrome.runtime.getURL('images/icon128.png'),
+                            title: '新文章提醒',
+                            message: article.title,
+                            priority: article.priority === 'high' ? 2 : 0,
+                            buttons: [
+                                { title: '立即查看' },
+                                { title: '稍后提醒' }
+                            ]
+                        };
+
+                        await chrome.notifications.create(`article-${article.id}`, options);
+                        this.alertStats.notifications++;
+                        await this.logAlert('notification', `显示通知: ${article.title}`);
+                    } catch (error) {
+                        console.error('Error showing notification:', error);
+                    }
+                }
+
+                // 更新统计信息
+                this.alertStats.totalAlerts++;
+                this.alertStats.alertTimes.push(new Date().toISOString());
+                
+                // 保持最多100条时间记录
+                if (this.alertStats.alertTimes.length > 100) {
+                    this.alertStats.alertTimes.shift();
+                }
+            }
+
+            // 保存统计信息
+            await this.saveAlertStats();
+            
+            // 更新角标
+            await this.updateBadge(newArticles.length);
+            
+            // 广播更新
+            this.broadcastStatsUpdate();
+        } catch (error) {
+            console.error('Error processing new articles:', error);
+        }
+    }
+
+    async updateBadgeText(count) {
+        try {
+            await chrome.action.setBadgeText({ text: count > 0 ? count.toString() : '' });
+            console.log('Badge updated:', count);
+        } catch (error) {
+            console.error('Error updating badge:', error);
+        }
+    }
+
+    async broadcastStatsUpdate() {
+        try {
+            // 向所有打开的popup发送更新消息
+            chrome.runtime.sendMessage({
+                action: 'statsUpdated',
+                stats: this.alertStats
+            });
+        } catch (error) {
+            // 忽略popup未打开的错误
+            if (!error.message.includes('receiving end does not exist')) {
+                console.error('Error broadcasting stats:', error);
             }
         }
     }
 
-    broadcastStatsUpdate() {
-        chrome.runtime.sendMessage({
-            type: 'statsUpdate',
-            data: this.alertStats
-        }).catch(error => {
-            console.log('Error broadcasting stats update:', error);
-        });
-    }
-
     listenForMessages() {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-            console.log('Background script received message:', message);
-
-            try {
-                switch (message.action) {
-                    case 'getArticles':
-                        this.getSupabaseArticles()
-                            .then(response => {
-                                response.articles = response.articles.map(article => ({
-                                    ...article,
-                                    isRead: this.readArticles.has(article.id)
-                                }));
-                                sendResponse(response);
-                            })
-                            .catch(error => {
-                                console.error('Error getting articles:', error);
-                                sendResponse({ articles: [], total: 0, error: error.message });
-                            });
-                        return true;
-
-                    case 'markAsRead':
-                        this.markArticleAsRead(message.articleId)
-                            .then(() => sendResponse({ success: true }))
-                            .catch(error => sendResponse({ success: false, error: error.message }));
-                        return true;
-
-                    case 'getLastFetchTime':
-                        sendResponse({ lastFetchTime: this.lastFetchTime });
-                        return true;
-
-                    case 'getAlertStats':
-                        sendResponse({ alertStats: this.alertStats });
-                        return true;
-
-                    default:
-                        console.warn('Unknown message action:', message.action);
-                        sendResponse({ status: 'error', error: 'Unknown action' });
-                        return false;
-                }
-            } catch (error) {
-                console.error('Error handling message:', error);
-                sendResponse({ status: 'error', error: error.message });
-                return false;
+            if (message.action === 'getArticles') {
+                this.getSupabaseArticles()
+                    .then(({ articles }) => {
+                        sendResponse({ articles });
+                    })
+                    .catch(error => {
+                        sendResponse({ error: error.message });
+                    });
+                return true; // 保持消息通道开启
+            }
+            
+            if (message.action === 'markAsRead') {
+                this.markArticleAsRead(message.articleId)
+                    .then(() => {
+                        sendResponse({ success: true });
+                    })
+                    .catch(error => {
+                        sendResponse({ error: error.message });
+                    });
+                return true;
+            }
+            
+            if (message.action === 'clearBadge') {
+                this.updateBadge(0)
+                    .then(() => {
+                        sendResponse({ success: true });
+                    })
+                    .catch(error => {
+                        sendResponse({ error: error.message });
+                    });
+                return true;
             }
         });
     }

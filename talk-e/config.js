@@ -34,7 +34,7 @@ const ENCRYPTED_API_KEY = encrypt('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi
 const SUPABASE_CONFIG = {
   url: 'https://tkcrnfgnspvtzwbbvyfv.supabase.co',
   getApiKey: () => decrypt(ENCRYPTED_API_KEY),
-  tableName: 'superbase_articles'
+  tableName: 'articles'
 };
 
 // 导出配置

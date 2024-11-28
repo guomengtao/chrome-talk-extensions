@@ -106,3 +106,117 @@ Talk-I 是文章浏览器，负责提供清晰高效的文章阅读界面。
     - 书签管理
     - 阅读统计
     - 离线阅读
+
+## Talk-I Chrome Extension Development Guide
+
+### Project Overview
+Talk-I is a Chrome extension for article browsing and management, built with modern web technologies and integrated with Supabase backend.
+
+### Technical Stack
+- Frontend: HTML5, CSS3, JavaScript (ES6+)
+- Backend: Supabase
+- Framework: Chrome Extension Manifest V3
+- Database: PostgreSQL (via Supabase)
+
+### Project Structure
+```
+talk-i/
+├── manifest.json        # Extension configuration
+├── popup.html          # Main popup interface
+├── css/
+│   └── popup.css       # Styles for popup interface
+├── js/
+│   ├── popup.js        # Main popup logic
+│   ├── supabase.js     # Supabase client configuration
+│   └── lib/
+│       └── supabase.min.js  # Supabase client library
+└── icons/              # Extension icons
+```
+
+### Key Features
+1. Article List Management
+   - Display articles with title and timestamp
+   - Filter articles by time period (All/Today/Week)
+   - Smooth transitions between list and detail views
+
+2. Article Detail View
+   - In-popup article content display
+   - Original URL linking
+   - Back navigation to list view
+
+3. Database Integration
+   - Real-time data synchronization
+   - Efficient data querying and filtering
+   - Robust error handling
+
+### Database Schema
+```sql
+create table public.articles (
+    id uuid default uuid_generate_v4() primary key,
+    title text not null,
+    content text,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    is_deleted boolean default false not null,
+    url text,
+    tags text[]
+);
+```
+
+### Security Features
+- Row Level Security (RLS) enabled
+- Secure API key handling
+- Content sanitization
+- XSS protection
+
+### Development Setup
+1. Clone the repository
+2. Configure Supabase credentials in `js/supabase.js`
+3. Load the extension in Chrome:
+   - Open chrome://extensions/
+   - Enable Developer mode
+   - Click "Load unpacked"
+   - Select the extension directory
+
+### Testing
+1. Manual Testing Points:
+   - Article list loading
+   - Filtering functionality
+   - Detail view transitions
+   - Error handling
+   - Network connectivity issues
+
+2. Performance Considerations:
+   - Response time optimization
+   - Memory usage monitoring
+   - Network request optimization
+
+### Deployment
+1. Update version in manifest.json
+2. Package the extension
+3. Submit to Chrome Web Store
+
+### Troubleshooting
+Common issues and solutions:
+1. Connection Issues
+   - Verify Supabase credentials
+   - Check network connectivity
+   - Review console logs
+
+2. Data Loading Problems
+   - Validate database schema
+   - Check RLS policies
+   - Verify query parameters
+
+### Future Improvements
+1. Feature Enhancements
+   - Offline support
+   - Article categorization
+   - Search functionality
+   - Batch operations
+
+2. Technical Improvements
+   - Performance optimization
+   - Code splitting
+   - Caching strategy
+   - Error recovery mechanisms
